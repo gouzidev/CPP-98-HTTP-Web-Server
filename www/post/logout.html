@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Logout Test</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background:#f6f8fb; padding:40px }
+    .card { background:#fff;border:1px solid #e6e9ef;border-radius:12px; padding:24px; max-width:520px; margin:0 auto; box-shadow:0 6px 14px rgba(0,0,0,.05) }
+    button { width:100%; padding:12px; border-radius:8px; border:1px solid #d9dee7; background:#dc3545; color:#fff; cursor:pointer }
+    .muted { color:#657287; font-size:13px }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Logout (POST /logout)</h2>
+    <form action="/upload" method="POST">
+      <button type="submit">Logout</button>
+    </form>
+    <p class="muted">Expect redirect 303 or 401 flow depending on session.</p>
+  </div>
+</body>
+</html>

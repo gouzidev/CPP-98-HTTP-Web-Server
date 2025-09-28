@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Multipart Upload → /upload</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background:#f6f8fb; padding:40px }
+    .card { background:#fff;border:1px solid #e6e9ef;border-radius:12px; padding:24px; max-width:600px; margin:0 auto; box-shadow:0 6px 14px rgba(0,0,0,.05) }
+    input, button { width:100%; padding:10px; margin:6px 0; border-radius:8px; border:1px solid #d9dee7 }
+    button { background:#e36209; color:#fff; border:none; cursor:pointer }
+    .muted { color:#657287; font-size:13px }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Multiple Files Upload (POST /post/files)</h2>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <input type="file" name="files" multiple />
+      <button type="submit">Upload</button>
+    </form>
+    <p class="muted">Expect 201 Created from handleMultiPart when done.</p>
+  </div>
+</body>
+</html>
