@@ -29,11 +29,6 @@
     <img src="docs/client-server-flow.png" alt="Client → Server Event Loop Flow" width="640" />
 </p>
 
-### CGI Integration
-<p align="center">
-    <img src="docs/cgi.png" alt="CGI Execution Pipeline" width="640" />
-</p>
-
 ### Core Flow
 1. `epoll_wait()` yields ready fds (listen sockets, client sockets, CGI pipes)
 2. New clients are accepted and made non‑blocking, inserted into a connection map
