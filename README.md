@@ -2,7 +2,7 @@
 
 > Minimal yet capable HTTP/1.1 web server implemented from scratch in portable C++98. Reinvents the core serving loop (no external HTTP libs) for learning purposes: parsing, routing, CGI, uploads, auth sessions, static files, and epoll based multiplexing.
 
-## 🚀 Features Overview
+## Features Overview
 
 - Multi-virtual-host configuration (host:port + per-location rules)
 - Non‑blocking I/O + edge oriented event loop (Linux `epoll`) 
@@ -18,7 +18,7 @@
 - Graceful handling of timeouts & body size limits
 - Simple utilities for path resolution, MIME / content typing
 
-## 🧭 High Level Architecture
+## High Level Architecture
 
 <p align="center">
     <img src="docs/architecture.png" alt="Architecture Overview" width="640" />
@@ -45,18 +45,18 @@
 8. Generator builds response: static file, CGI execution, upload handling, or error
 9. Socket toggled EPOLLOUT to flush response; connection kept alive when allowed
 
-## 🧱 Request Parsing Highlights
+## Request Parsing Highlights
 - Stateless tokenizer avoided; uses incremental boundary searching in the accumulated socket buffer
 - Header keys canonicalized to lowercase for O(1) map lookups
 - Chunked decoder is a small state machine: SIZE → DATA → (repeat) → END
 - Body hard limit enforced both pre-read (via `Content-Length`) and during streaming (chunk accumulator)
 
-## 🔐 Sessions & Auth (Conceptual)
+## Sessions & Auth (Conceptual)
 - On successful login/signup, server creates a session (opaque id) and sets a cookie
 - Subsequent requests look up the session; absence or expiration → redirect to login route
 - Protected locations flagged in config; middleware-style gate before handler logic
 
-## 🗂 Configuration Model (Conceptual)
+## Configuration Model (Conceptual)
 Pseudo‑DSL (inspired by nginx) with hierarchical structure:
 
 ```
@@ -80,13 +80,13 @@ server {
 
 (Current parser expects its own format; this block is illustrative, not exact.)
 
-## ⚙️ Supported CGI
+## Supported CGI
 - Spawns interpreter (e.g., `python` / `bash`) with environment variables (method, path, query, etc.)
 - Reads stdout through a pipe registered in `epoll`
 - Merges script output (headers/body) into HTTP response
 - Timeout sweeper reaps long‑running scripts
 
-## 📦 Build & Run (Binary Only)
+## Build & Run (Binary Only)
 For now the repository intentionally withholds full source while the writeup is being finalized. A future commit may expose the implementation once documentation & refactoring stabilize.
 
 To build locally (when sources are available):
@@ -108,7 +108,7 @@ Planned additions:
 - `event-loop.png` (sequence variant)
 - `request-lifecycle.png` (narrative form)
 
-## 🧪 Example Interactions (Conceptual)
+## Example Interactions (Conceptual)
 ```
 GET /            -> 200 index.html
 GET /auth        -> 302 /login (no session)
@@ -117,19 +117,19 @@ POST /upload     -> 201 + JSON summary of stored file(s)
 DELETE /upload/X -> 204 (file removed)
 ```
 
-## ❗ Design Tradeoffs
+## Design Tradeoffs
 - Single process, single thread: simplicity over parallel CPU usage
 - epoll based readiness avoids per-thread blocking & scales better than naive select
 - Minimal dynamic allocations inside hot paths (reused buffers where safe)
 - Custom parser instead of regex for performance & control in C++98 constraints
 - No TLS layer (out of scope for educational phase)
 
-## 🧹 Error Handling & Limits
+## Error Handling & Limits
 - Central exception types drive HTTP error generation
 - Custom error pages if configured; fallback to small inline templates
 - Body size + timeout guards prevent resource exhaustion
 
-## 🧭 Roadmap
+## Roadmap
 - [ ] Public release of full parsing & event loop source
 - [ ] Config hot-reload (SIGHUP)
 - [ ] Directory auto-index generation (HTML table)
@@ -138,7 +138,7 @@ DELETE /upload/X -> 204 (file removed)
 - [ ] HTTP persistent connection improvements (pipelining detection)
 - [ ] Basic WebSocket upgrade experiment
 
-## 📝 Educational Notes
+## Educational Notes
 This project was built under constraints similar to certain systems programming curricula: C++98 standard, no external high-level HTTP frameworks, emphasis on understanding of:
 - Socket lifecycle (create → bind → listen → accept → read/write → close)
 - Non-blocking I/O patterns
@@ -146,10 +146,10 @@ This project was built under constraints similar to certain systems programming 
 - Robust input validation & state tracking
 - Resource cleanup and error propagation
 
-## 📄 License
+## License
 Temporarily All Rights Reserved while code is being polished. Documentation may later switch to a permissive license alongside a source release.
 
-## 🙋 FAQ
+## FAQ
 Q: Why is the source hidden?  
 A: I'm staging a clean public release with full commentary; current code contains experimental sections being refactored.
 
