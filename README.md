@@ -229,6 +229,9 @@ This project was built under constraints similar to certain systems programming 
 - Robust input validation & state tracking
 - Resource cleanup and error propagation
 
+## Contributors
+This project was developed in collaboration with my teammate **[Asma Koraichi](https://github.com/asmawithoute)**. Her contributions were essential to the successful implementation of this HTTP web server.
+
 ## License
 Temporarily All Rights Reserved while code is being polished. Documentation may later switch to a permissive license alongside a source release.
 
