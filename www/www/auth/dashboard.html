@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebServ Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; color: #333; }
+        .dashboard-container { max-width: 1200px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); border-radius: 20px; padding: 40px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #e9ecef; }
+        .welcome-section h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .welcome-section p { font-size: 1.2rem; color: #666; }
+        .user-info { background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 15px; padding: 30px; margin-bottom: 30px; border-left: 5px solid #667eea; }
+        .user-info h3 { margin-bottom: 20px; color: #333; font-size: 1.5rem; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .info-item { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); }
+        .info-label { font-weight: 600; color: #667eea; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; margin-bottom: 5px; }
+        .info-value { font-size: 1.1rem; color: #333; }
+        .quick-actions { background: white; border-radius: 15px; padding: 25px; margin-top: 30px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); }
+        .quick-actions h3 { margin-bottom: 20px; color: #333; font-size: 1.5rem; }
+        .quick-action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .quick-action-btn { background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; text-decoration: none; color: #333; }
+        .quick-action-btn:hover { border-color: #667eea; background: #f0f7ff; transform: translateY(-2px); }
+        .quick-action-icon { font-size: 2rem; margin-bottom: 10px; }
+        .quick-action-label { font-weight: 600; font-size: 0.9rem; }
+        .logout-btn { background: #f8f9fa; border: 2px solid #e9ecef; } /* Style for logout button */
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <div class="welcome-section">
+                <h1>Welcome back, {{firstName}}! 👋</h1>
+                <p>Manage your account and explore WebServ features</p>
+            </div>
+        </div>
+
+        <div class="user-info">
+            <h3>📊 Your Account Information</h3>
+            <div class="info-grid">
+                <div class="info-item"><div class="info-label">Full Name</div><div class="info-value">{{firstName}} {{lastName}}</div></div>
+                <div class="info-item"><div class="info-label">Username</div><div class="info-value">{{userName}}</div></div>
+                <div class="info-item"><div class="info-label">Email Address</div><div class="info-value">{{email}}</div></div>
+                <div class="info-item"><div class="info-label">Account Status</div><div class="info-value">✅ Active</div></div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h3>⚡ Quick Actions</h3>
+            <div class="quick-action-grid">
+                <a href="/auth/profile.html" class="quick-action-btn"><div class="quick-action-icon">👤</div><div class="quick-action-label">Profile</div></a>
+                <a href="/upload" class="quick-action-btn"><div class="quick-action-icon">📁</div><div class="quick-action-label">upload</div></a>
+                <a href="/post" class="quick-action-btn"><div class="quick-action-icon">🧪</div><div class="quick-action-label">POST</div></a>
+                <a href="/cgi" class="quick-action-btn"><div class="quick-action-icon">🧪</div><div class="quick-action-label">CGI</div></a>
+                <form action="/logout" method="POST" style="display: contents;">
+                    <button type="submit" class="quick-action-btn logout-btn"><div class="quick-action-icon">🚪</div><div class="quick-action-label">Logout</div></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

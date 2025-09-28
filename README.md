@@ -81,14 +81,102 @@ server {
 - Merges script output (headers/body) into HTTP response
 - Timeout sweeper reaps long‑running scripts
 
-## Build & Run (Binary Only)
-For now the repository intentionally withholds full source while the writeup is being finalized. A future commit may expose the implementation once documentation & refactoring stabilize.
+## Build & Run
+Requires a POSIX environment (Linux recommended), a C++98 capable compiler (g++ / clang++), and epoll.
 
-To build locally (when sources are available):
 ```
-make
-./webserv <config-file>
+make            # builds the webserv binary
+./webserv config/conf.conf             # single server example
+./webserv config/multiserver.conf      # multi‑server (two listen sockets)
 ```
+
+Flags are defined in the `Makefile`; adjust if you want extra warnings (e.g. `-Wall -Wextra -Werror`).
+
+You can also pass a path to a custom config: `./webserv /path/to/your.conf`.
+
+Exit the server with Ctrl+C.
+
+### Runtime Notes
+- Non‑blocking sockets + epoll loop.
+- Custom request parser (no external HTTP libs).
+- CGI scripts executed based on extension mapping (see `location /cgi` in config). 
+
+If build fails: ensure you are not using a C++ standard later than 98 unless you adapt code (remove `-std=c++98` if experimenting, but project was written to conform to it).
+
+## Required Directory Layout (IMPORTANT for provided configs)
+The supplied config files (`config/conf.conf` and `config/multiserver.conf`) use ABSOLUTE paths that match the original development machine (e.g. `/home/sgouzi/www` or `/home/sgouzi/webserv/www`). You MUST either:
+1. Create the same directory tree on your machine (not recommended), OR
+2. Edit the config file(s) to point to a directory you control (recommended), keeping the subfolder structure.
+
+### Minimal folder set expected by `conf.conf`
+Relative form (recommended) if you change `root` to `./www`:
+```
+./www
+    index.html
+    error/
+        error.html 401.html 404.html (etc.)
+    login/ (login.html signup.html)
+    auth/  (dashboard.html ...)
+    upload/
+        files/   # destination for uploaded files
+    post/
+        files/   # if using multiserver variant upload_dir points here
+    redirect/ (optional pages referenced in redirects)
+    cgi/      (python / bash scripts if using CGI)
+```
+
+### What each config directive expects
+- `root` (server block): base directory for static lookups when a `location` does not override `root`.
+- `errorFolder`: directory containing error templates (e.g. `error.html`, `404.html`).
+- `loginLocation`, `signupLocation`, `logoutLocation`, `authLocation`, `uploadLocation`: logical URL prefixes; corresponding `location` blocks map them to physical directories.
+- `upload_dir` (inside a location): physical destination directory for uploaded files; MUST exist and be writable by the server process.
+- `cgi_path <ext> <interpreter>`: interpreter binary must exist and be executable.
+
+### Quick setup helper (adjust ROOT as you like)
+```
+ROOT=./www
+mkdir -p "$ROOT"/error "$ROOT"/login "$ROOT"/auth \
+                 "$ROOT"/upload/files"" "$ROOT"/post/files "$ROOT"/redirect "$ROOT"/cgi
+touch "$ROOT"/index.html
+echo '<h1>It works</h1>' > "$ROOT"/index.html
+```
+(Populate other HTML / CGI scripts as needed; sample scripts can live in `www/cgi/`.)
+
+### Adapting the provided configs
+Open `config/conf.conf` and replace every absolute path `/home/sgouzi/www` with your chosen `ROOT` (e.g. `./www`). Do the same for `multiserver.conf` (paths using `/home/sgouzi/webserv/www`). Ensure consistency for:
+- `root`
+- `errorFolder`
+- every `location` block's `root`
+- any `upload_dir`
+
+If you forget to change one path, you will likely see 404 responses or failed file opens in stderr.
+
+### Permissions
+Make sure the process user has read permission for static files and read/write for upload directories. Example:
+```
+chmod -R 755 ./www
+chmod -R 750 ./www/upload/files ./www/post/files
+```
+
+### Multi-server Config
+`multiserver.conf` starts two servers (e.g. ports 8080 & 8081). You must ensure both ports are free and both directory trees exist (or updated to your relative structure).
+
+### CGI Scripts
+Place scripts in the directory mapped by the `location /cgi` (or equivalent). Ensure they are executable:
+```
+chmod +x ./www/cgi/*.py ./www/cgi/*.bash 2>/dev/null || true
+```
+Python / bash / php interpreters must exist at the paths listed in `cgi_path` directives (adjust if needed).
+
+### Common Startup Issues
+| Symptom | Likely Cause | Fix |
+|---------|--------------|-----|
+| 404 for every request | Wrong root path | Update config paths or create folders |
+| 500 after upload | Upload dir missing or not writable | Create dir & fix permissions |
+| CGI returns 500 | Interpreter path wrong | Adjust `cgi_path` to actual interpreter |
+| Immediate exit | Config parse error | Validate braces / directives |
+
+Feel free to create a new simplified config once comfortable.
 
 ## 🖼 Visuals
 Current diagrams (all in `docs/`):
@@ -145,11 +233,17 @@ This project was built under constraints similar to certain systems programming 
 Temporarily All Rights Reserved while code is being polished. Documentation may later switch to a permissive license alongside a source release.
 
 ## FAQ
-Q: Why is the source hidden?  
-A: I'm staging a clean public release with full commentary; current code contains experimental sections being refactored.
+Q: Why are there absolute paths in the sample configs?  
+A: They reflect the original development environment. Replace them with relative paths (`./www`) or absolute ones valid on your system.
 
-Q: Can I try a binary?  
-A: Planned: pre-built reproducible release once CI is configured.
+Q: Can I run multiple servers simultaneously?  
+A: Yes—`multiserver.conf` demonstrates two `server` blocks (ensure ports are free).
+
+Q: Why epoll and not select/poll?  
+A: Better scalability and cleaner edge handling for higher connection counts.
+
+Q: Where do uploaded files go?  
+A: Into the directory specified by `upload_dir` inside the relevant `location` (must exist beforehand).
 
 ---
-Questions / suggestions? Open an issue — feedback helps shape the upcoming full release.
+Questions / suggestions? Open an issue — feedback helps improve the project.

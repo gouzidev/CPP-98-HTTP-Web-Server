@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>URL-Encoded POST /form-test</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background:#f6f8fb; padding:40px }
+    .card { background:#fff;border:1px solid #e6e9ef;border-radius:12px; padding:24px; max-width:520px; margin:0 auto; box-shadow:0 6px 14px rgba(0,0,0,.05) }
+    input, button { width:100%; padding:10px; margin:6px 0; border-radius:8px; border:1px solid #d9dee7 }
+    button { background:#6f42c1; color:#fff; border:none; cursor:pointer }
+    .muted { color:#657287; font-size:13px }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>application/x-www-form-urlencoded</h2>
+    <form action="/form-test" method="POST">
+      <input type="text" name="firstName" value="Alan" placeholder="First Name" />
+      <input type="text" name="lastName" value="Turing" placeholder="Last Name" />
+      <button type="submit">Submit</button>
+    </form>
+    <p class="muted">Config redirects 301 to /redirect.</p>
+  </div>
+</body>
+</html>
